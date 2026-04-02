@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import collections
 from contextlib import contextmanager, nullcontext, suppress
+from enum import Enum
 import fnmatch
 import hashlib
 import inspect
@@ -93,6 +94,7 @@ settings_logger = logging.getLogger("pyfluent.settings_api")
 
 _static_class_attributes = [
     "_version",
+    "_exposure_level",
     "_deprecated_version",
     "_python_name",
     "fluent_name",
@@ -113,6 +115,22 @@ class ReadOnlyActionError(RuntimeError):
     def __init__(self, python_path):
         """Initialize ReadOnlyActionError."""
         super().__init__(f"'{python_path}' is read-only and cannot be executed.")
+
+
+class ExposureLevel(Enum):
+    """Exposure level of a settings object."""
+
+    ALPHA = "alpha"
+    BETA = "beta"
+    STABLE = "stable"
+
+    @classmethod
+    def _missing_(cls, value):
+        # Extra defensive check: server is expected to return only
+        # alpha, beta, stable, so this should not occur.
+        raise ValueError(
+            f"Invalid exposure-level '{value}'. Allowed values are: alpha, beta, stable."
+        )
 
 
 class _InlineConstants:
@@ -462,6 +480,20 @@ class Base:
         """Whether the object is read-only."""
         attr = self.get_attr(_InlineConstants.is_read_only)
         return False if attr is None else attr
+
+    def exposure_level(self) -> ExposureLevel | None:
+        """Get the exposure level of the object.
+
+        Returns
+        -------
+        ExposureLevel | None
+            The exposure level of the object (Alpha, Beta, or Stable).
+        """
+        attr = getattr(self, "_exposure_level", None)
+        if attr is None:
+            return ExposureLevel.STABLE
+        else:
+            return ExposureLevel(attr)
 
     def __setattr__(self, name, value):
         raise AttributeError(name)
@@ -2301,6 +2333,10 @@ def get_cls(name, info, parent=None, version=None, parent_taboo=None):
         dct["_child_classes"] = {}
         cls = type(pname, bases, dct)
 
+        exposure_level = info.get("exposure_level", None)
+        if exposure_level:
+            print(cls.__name__, exposure_level)
+            cls._exposure_level = exposure_level
         deprecated_version = info.get("deprecated_version", None)
         if deprecated_version and float(deprecated_version) >= 22.2:
             cls._deprecated_version = deprecated_version
