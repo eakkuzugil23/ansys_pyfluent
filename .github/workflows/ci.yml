@@ -398,7 +398,7 @@ jobs:
 
       - name: Upload 23.1 Coverage Results to Codecov
         if: matrix.image-tag == 'v23.1.0' && github.event_name == 'push'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v6
         with:
           root_dir: ${{ github.workspace }}
           name: cov_xml.xml
