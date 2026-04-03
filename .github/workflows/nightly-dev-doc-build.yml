@@ -76,7 +76,7 @@ jobs:
           popd
 
       - name: Upload HTML Documentation
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: HTML-Documentation-tag-${{ env.DOC_DEPLOYMENT_IMAGE_TAG }}
           path: HTML-Documentation-tag-${{ env.DOC_DEPLOYMENT_IMAGE_TAG }}.zip
