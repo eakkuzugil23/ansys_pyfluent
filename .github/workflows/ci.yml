@@ -31,7 +31,7 @@ jobs:
     name: Documentation Style Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
   
       - name: Running Vale
         uses: errata-ai/vale-action@reviewdog
@@ -55,7 +55,7 @@ jobs:
         python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -94,7 +94,7 @@ jobs:
       DOC_DEPLOYMENT_IMAGE_TAG: v23.1.0
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -213,7 +213,7 @@ jobs:
     runs-on: [self-hosted, pyfluent]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -355,7 +355,7 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -418,7 +418,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Setup Python
         uses: actions/setup-python@v4
